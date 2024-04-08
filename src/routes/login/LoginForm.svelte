@@ -1,5 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
+  import { currentSession } from "$lib/stores";
   import Message from "$lib/ui/Message.svelte";
   import UserCredentials from "$lib/ui/UserCredentials.svelte";
 
@@ -8,8 +9,9 @@
   let message = "";
 
   async function login() {
-    const success = false;
+    const success = true;
     if (success) {
+      currentSession.set(email);
       goto("/donate");
     } else {
       email = "";
