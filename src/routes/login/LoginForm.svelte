@@ -14,6 +14,7 @@
     let session = await donationService.login(email, password);
     if (session) {
       currentSession.set(session);
+      localStorage.donation = JSON.stringify(session);
       goto("/donate");
     } else {
       email = "";
