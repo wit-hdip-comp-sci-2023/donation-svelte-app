@@ -11,3 +11,19 @@ export interface User {
   password: string;
   _id?: string;
 }
+
+export interface Candidate {
+  firstName: string;
+  lastName: string;
+  office: string;
+  _id: string;
+}
+
+export interface Donation {
+  amount: number;
+  method: string;
+  candidate: Candidate | string;
+  donor: User | string;
+  lat: number;
+  lng: number;
+}
