@@ -1,7 +1,7 @@
 <script lang="ts">
   import { donationService } from "$lib/services/donation-service";
   import type { Candidate, Donation } from "$lib/types/donation-types";
-  import { currentSession } from "$lib/stores";
+  import { currentSession, latestDonation } from "$lib/stores";
   import Coordinates from "$lib/ui/Coordinates.svelte";
   import { get } from "svelte/store";
 
@@ -32,6 +32,9 @@
           message = "Donation not completed - some error occurred";
           return;
         }
+        donation.candidate = candidate;
+        donation.donor = $currentSession.name;
+        latestDonation.set(donation);
         message = `Thanks! You donated ${amount} to ${candidate.firstName} ${candidate.lastName}`;
       }
     } else {
