@@ -5,16 +5,28 @@
   import { donationService } from "$lib/services/donation-service";
   import { onMount } from "svelte";
   import { get } from "svelte/store";
-  import type { Candidate } from "$lib/types/donation-types";
+  import type { Candidate, Donation } from "$lib/types/donation-types";
+  import DonationList from "$lib/ui/DonationList.svelte";
 
   let candidateList: Candidate[] = [];
+  let donations: Donation[] = [];
   subTitle.set("Make a Donation");
 
   onMount(async () => {
     candidateList = await donationService.getCandidates(get(currentSession));
+    donations = await donationService.getDonations(get(currentSession));
   });
 </script>
 
-<Card title="Please Donate">
-  <DonateForm {candidateList} />
-</Card>
+<div class="columns">
+  <div class="column">
+    <Card title="Donatinons to Date">
+      <DonationList {donations} />
+    </Card>
+  </div>
+  <div class="column">
+    <Card title="Please Donate">
+      <DonateForm {candidateList} />
+    </Card>
+  </div>
+</div>
