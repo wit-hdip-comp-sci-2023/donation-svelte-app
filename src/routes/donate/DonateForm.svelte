@@ -1,23 +1,25 @@
 <script lang="ts">
+  import type { Candidate } from "$lib/types/donation-types";
   import Coordinates from "$lib/ui/Coordinates.svelte";
 
-  const candidateList = [
-    {
-      firstName: "Lisa",
-      lastName: "Simpson",
-      office: "President"
-    },
-    {
-      firstName: "Maggie",
-      lastName: "Simpson",
-      office: "President"
-    },
-    {
-      firstName: "Ned",
-      lastName: "Flanders",
-      office: "President"
-    }
-  ];
+  export let candidateList: Candidate[] = [];
+  // const candidateList = [
+  //   {
+  //     firstName: "Lisa",
+  //     lastName: "Simpson",
+  //     office: "President"
+  //   },
+  //   {
+  //     firstName: "Maggie",
+  //     lastName: "Simpson",
+  //     office: "President"
+  //   },
+  //   {
+  //     firstName: "Ned",
+  //     lastName: "Flanders",
+  //     office: "President"
+  //   }
+  // ];
 
   let amount = 0;
   let selectedCandidate = "Simpson, Lisa";
