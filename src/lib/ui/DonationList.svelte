@@ -28,6 +28,8 @@
         <td>
           {#if typeof donation.donor !== "string"}
             {donation.donor.lastName}, {donation.donor.firstName}
+          {:else}
+            {donation.donor}
           {/if}
         </td>
       </tr>
