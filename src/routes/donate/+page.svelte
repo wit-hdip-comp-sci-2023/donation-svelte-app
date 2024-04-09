@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { currentSession, subTitle } from "$lib/stores";
+  import { currentSession, latestDonation, subTitle } from "$lib/stores";
   import DonateForm from "./DonateForm.svelte";
   import Card from "$lib/ui/Card.svelte";
   import { donationService } from "$lib/services/donation-service";
@@ -15,6 +15,13 @@
   onMount(async () => {
     candidateList = await donationService.getCandidates(get(currentSession));
     donations = await donationService.getDonations(get(currentSession));
+  });
+
+  latestDonation.subscribe(async (donation) => {
+    if (donation) {
+      donations.push(donation);
+      donations = [...donations];
+    }
   });
 </script>
 
