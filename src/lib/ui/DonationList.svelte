@@ -1,30 +1,7 @@
 <script lang="ts">
-  export let donations = [
-    {
-      amount: 40,
-      method: "paypal",
-      donor: "bart@simpson.com",
-      candidate: { lastName: "Simpson", firstName: "Lisa" },
-      lat: "52.161290",
-      lng: "-7.51540"
-    },
-    {
-      amount: 90,
-      method: "direct",
-      donor: "marge@simpson.com",
-      candidate: { lastName: "Simpson", firstName: "maggie" },
-      lat: "52.261290",
-      lng: "-7.231540"
-    },
-    {
-      amount: 430,
-      method: "paypal",
-      donor: "homer@simpson.com",
-      candidate: { lastName: "Flanders", firstName: "Ned" },
-      lat: "52.361290",
-      lng: "-7.241540"
-    }
-  ];
+  import type { Donation } from "$lib/types/donation-types";
+
+  export let donations: Donation[];
 </script>
 
 <table class="table is-fullwidth">
@@ -42,11 +19,16 @@
         </td>
         <td>
           {donation.method}
-        </td><td>
-          {donation.candidate.lastName}, {donation.candidate.firstName}
         </td>
         <td>
-          {donation.donor}
+          {#if typeof donation.candidate !== "string"}
+            {donation.candidate.lastName}, {donation.candidate.firstName}
+          {/if}
+        </td>
+        <td>
+          {#if typeof donation.donor !== "string"}
+            {donation.donor.lastName}, {donation.donor.firstName}
+          {/if}
         </td>
       </tr>
     {/each}
