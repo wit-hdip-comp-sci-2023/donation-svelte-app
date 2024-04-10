@@ -13,12 +13,14 @@
   let candidateList: Candidate[] = [];
   let donations: Donation[] = [];
   let donationsByCandidate: DataSet;
+  let candidates: Candidate[] = [];
+
   subTitle.set("Make a Donation");
 
   onMount(async () => {
     candidateList = await donationService.getCandidates(get(currentSession));
     donations = await donationService.getDonations(get(currentSession));
-    const candidates = await donationService.getCandidates(get(currentSession));
+    candidates = await donationService.getCandidates(get(currentSession));
     donationsByCandidate = generateByCandidate(donations, candidates);
   });
 
