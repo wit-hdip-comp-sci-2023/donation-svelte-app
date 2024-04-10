@@ -9,6 +9,8 @@
   import { get } from "svelte/store";
   import type { Candidate, DataSet, Donation } from "$lib/types/donation-types";
   import { generateByCandidate } from "$lib/services/donation-utils";
+  import LeafletMap from "$lib/ui/LeafletMap.svelte";
+  import DonationList from "$lib/ui/DonationList.svelte";
 
   let candidateList: Candidate[] = [];
   let donations: Donation[] = [];
@@ -36,12 +38,24 @@
 <div class="columns">
   <div class="column">
     <Card title="Donatinons to Date">
-      <Chart data={donationsByCandidate} type="bar" />
+      <LeafletMap height={30} />
     </Card>
   </div>
   <div class="column">
     <Card title="Please Donate">
       <DonateForm {candidateList} />
+    </Card>
+  </div>
+</div>
+<div class="columns">
+  <div class="column">
+    <Card title="Donatinons to Date">
+      <Chart data={donationsByCandidate} type="bar" />
+    </Card>
+  </div>
+  <div class="column">
+    <Card title="Please Donate">
+      <DonationList {donations} />
     </Card>
   </div>
 </div>
