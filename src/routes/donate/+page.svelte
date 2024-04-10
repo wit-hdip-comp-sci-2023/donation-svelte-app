@@ -42,6 +42,11 @@
       donations = [...donations];
       donationsByCandidate = generateByCandidate(donations, candidates);
     }
+    if (typeof donation.candidate !== "string") {
+      const popup = `${donation.candidate.firstName} ${donation.candidate.lastName}: €${donation.amount}`;
+      map.addMarker(donation.lat, donation.lng, popup);
+      map.moveTo(donation.lat, donation.lng);
+    }
   });
 </script>
 
