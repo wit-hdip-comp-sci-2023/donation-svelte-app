@@ -16,6 +16,7 @@
   let donations: Donation[] = [];
   let donationsByCandidate: DataSet;
   let candidates: Candidate[] = [];
+  let map: LeafletMap;
 
   subTitle.set("Make a Donation");
 
@@ -24,6 +25,15 @@
     donations = await donationService.getDonations(get(currentSession));
     candidates = await donationService.getCandidates(get(currentSession));
     donationsByCandidate = generateByCandidate(donations, candidates);
+
+    donations.forEach((donation: Donation) => {
+      if (typeof donation.candidate !== "string") {
+        const popup = `${donation.candidate.firstName} ${donation.candidate.lastName}: €${donation.amount}`;
+        map.addMarker(donation.lat, donation.lng, popup);
+      }
+    });
+    const lastDonation = donations[donations.length - 1];
+    if (lastDonation) map.moveTo(lastDonation.lat, lastDonation.lng);
   });
 
   latestDonation.subscribe(async (donation) => {
@@ -38,7 +48,7 @@
 <div class="columns">
   <div class="column">
     <Card title="Donatinons to Date">
-      <LeafletMap height={30} />
+      <LeafletMap height={30} bind:this={map} />
     </Card>
   </div>
   <div class="column">
