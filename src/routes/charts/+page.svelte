@@ -6,52 +6,20 @@
   import { currentSession, subTitle } from "$lib/stores";
   import { get } from "svelte/store";
   import Card from "$lib/ui/Card.svelte";
+  import type { DataSet } from "$lib/types/donation-types";
+  import { generateByMethod, generateByCandidate } from "$lib/services/donation-utils";
 
-  const totalByMethod = {
-    labels: ["paypal", "direct"],
-    datasets: [
-      {
-        values: [0, 0]
-      }
-    ]
-  };
-
-  const donationsByCandidate = {
-    labels: [],
-    datasets: [
-      {
-        values: [0, 0]
-      }
-    ]
-  };
+  let totalByMethod: DataSet;
+  let donationsByCandidate: DataSet;
 
   subTitle.set("Donations Data");
 
   onMount(async () => {
     const donationList = await donationService.getDonations(get(currentSession));
-    donationList.forEach((donation) => {
-      if (donation.method == "paypal") {
-        totalByMethod.datasets[0].values[0] += donation.amount;
-      } else if (donation.method == "direct") {
-        totalByMethod.datasets[0].values[1] += donation.amount;
-      }
-    });
-
     const candidates = await donationService.getCandidates(get(currentSession));
-    donationsByCandidate.labels = [];
-    candidates.forEach((candidate) => {
-      // @ts-ignore
-      donationsByCandidate.labels.push(`${candidate.lastName}, ${candidate.firstName}`);
-      donationsByCandidate.datasets[0].values.push(0);
-    });
-    candidates.forEach((candidate, i) => {
-      donationList.forEach((donation) => {
-        // @ts-ignore
-        if (donation.candidate._id == candidate._id) {
-          donationsByCandidate.datasets[0].values[i] += donation.amount;
-        }
-      });
-    });
+
+    totalByMethod = generateByMethod(donationList);
+    donationsByCandidate = generateByCandidate(donationList, candidates);
   });
 </script>
 
