@@ -28,6 +28,7 @@
     if (donation) {
       donations.push(donation);
       donations = [...donations];
+      donationsByCandidate = generateByCandidate(donations, candidates);
     }
   });
 </script>
