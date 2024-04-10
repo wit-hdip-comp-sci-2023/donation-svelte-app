@@ -1,20 +1,25 @@
 <script lang="ts">
+  // @ts-ignore
+  import Chart from "svelte-frappe-charts";
   import { currentSession, latestDonation, subTitle } from "$lib/stores";
   import DonateForm from "./DonateForm.svelte";
   import Card from "$lib/ui/Card.svelte";
   import { donationService } from "$lib/services/donation-service";
   import { onMount } from "svelte";
   import { get } from "svelte/store";
-  import type { Candidate, Donation } from "$lib/types/donation-types";
-  import DonationList from "$lib/ui/DonationList.svelte";
+  import type { Candidate, DataSet, Donation } from "$lib/types/donation-types";
+  import { generateByCandidate } from "$lib/services/donation-utils";
 
   let candidateList: Candidate[] = [];
   let donations: Donation[] = [];
+  let donationsByCandidate: DataSet;
   subTitle.set("Make a Donation");
 
   onMount(async () => {
     candidateList = await donationService.getCandidates(get(currentSession));
     donations = await donationService.getDonations(get(currentSession));
+    const candidates = await donationService.getCandidates(get(currentSession));
+    donationsByCandidate = generateByCandidate(donations, candidates);
   });
 
   latestDonation.subscribe(async (donation) => {
@@ -28,7 +33,7 @@
 <div class="columns">
   <div class="column">
     <Card title="Donatinons to Date">
-      <DonationList {donations} />
+      <Chart data={donationsByCandidate} type="bar" />
     </Card>
   </div>
   <div class="column">
