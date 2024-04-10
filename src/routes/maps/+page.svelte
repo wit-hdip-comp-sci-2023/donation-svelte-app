@@ -1,11 +1,23 @@
 <script lang="ts">
-  import { subTitle } from "$lib/stores";
+  import { currentSession, subTitle } from "$lib/stores";
+  import { donationService } from "$lib/services/donation-service";
   import Card from "$lib/ui/Card.svelte";
   import LeafletMap from "$lib/ui/LeafletMap.svelte";
+  import { onMount } from "svelte";
+  import type { Donation } from "$lib/types/donation-types";
+  import { get } from "svelte/store";
 
   subTitle.set("Donations Geo Data");
+  let map: LeafletMap;
+
+  onMount(async () => {
+    const donations = await donationService.getDonations(get(currentSession));
+    donations.forEach((donation: Donation) => {
+      map.addMarker(donation.lat, donation.lng);
+    });
+  });
 </script>
 
 <Card title="Donations Locations">
-  <LeafletMap height={60} />
+  <LeafletMap height={60} bind:this={map} />
 </Card>
