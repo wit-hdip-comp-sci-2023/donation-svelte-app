@@ -16,6 +16,15 @@
     ]
   };
 
+  const donationsByCandidate = {
+    labels: [],
+    datasets: [
+      {
+        values: [0, 0]
+      }
+    ]
+  };
+
   subTitle.set("Donations Data");
 
   onMount(async () => {
@@ -26,6 +35,22 @@
       } else if (donation.method == "direct") {
         totalByMethod.datasets[0].values[1] += donation.amount;
       }
+    });
+
+    const candidates = await donationService.getCandidates(get(currentSession));
+    donationsByCandidate.labels = [];
+    candidates.forEach((candidate) => {
+      // @ts-ignore
+      donationsByCandidate.labels.push(`${candidate.lastName}, ${candidate.firstName}`);
+      donationsByCandidate.datasets[0].values.push(0);
+    });
+    candidates.forEach((candidate, i) => {
+      donationList.forEach((donation) => {
+        // @ts-ignore
+        if (donation.candidate._id == candidate._id) {
+          donationsByCandidate.datasets[0].values[i] += donation.amount;
+        }
+      });
     });
   });
 </script>
@@ -38,7 +63,7 @@
   </div>
   <div class="column has-text-centered">
     <Card title="Donations By Method">
-      <Chart data={totalByMethod} type="pie" />
+      <Chart data={donationsByCandidate} type="pie" />
     </Card>
   </div>
 </div>
