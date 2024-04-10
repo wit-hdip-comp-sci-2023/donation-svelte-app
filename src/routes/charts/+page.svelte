@@ -1,25 +1,44 @@
 <script lang="ts">
   // @ts-ignore
   import Chart from "svelte-frappe-charts";
-  import Menu from "$lib/ui/Menu.svelte";
-  import Heading from "$lib/ui/Heading.svelte";
+  import { onMount } from "svelte";
+  import { donationService } from "$lib/services/donation-service";
+  import { currentSession, subTitle } from "$lib/stores";
+  import { get } from "svelte/store";
+  import Card from "$lib/ui/Card.svelte";
 
-  const chartData = {
-    labels: ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"],
+  const totalByMethod = {
+    labels: ["paypal", "direct"],
     datasets: [
       {
-        values: [10, 12, 3, 9, 8, 15, 9]
+        values: [0, 0]
       }
     ]
   };
+
+  subTitle.set("Donations Data");
+
+  onMount(async () => {
+    const donationList = await donationService.getDonations(get(currentSession));
+    donationList.forEach((donation) => {
+      if (donation.method == "paypal") {
+        totalByMethod.datasets[0].values[0] += donation.amount;
+      } else if (donation.method == "direct") {
+        totalByMethod.datasets[0].values[1] += donation.amount;
+      }
+    });
+  });
 </script>
 
 <div class="columns">
-  <div class="column box has-text-centered">
-    <h1 class="title is-4">Donations to date</h1>
-    <Chart data={chartData} type="line" />
+  <div class="column">
+    <Card title="Donations By Method">
+      <Chart data={totalByMethod} type="bar" />
+    </Card>
   </div>
   <div class="column has-text-centered">
-    <img alt="Homer" src="/homer4.jpeg" width="300" />
+    <Card title="Donations By Method">
+      <Chart data={totalByMethod} type="pie" />
+    </Card>
   </div>
 </div>
