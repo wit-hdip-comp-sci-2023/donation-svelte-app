@@ -1,20 +1,18 @@
 <script lang="ts">
-  import { browser } from "$app/environment";
-  import { currentSession } from "$lib/stores";
   import Heading from "$lib/ui/Heading.svelte";
   import Menu from "$lib/ui/Menu.svelte";
+  import { currentSession } from "$lib/stores";
 
-  if (browser) {
-    const savedSession = localStorage.donation;
-    if (savedSession) {
-      const session = JSON.parse(savedSession);
-      currentSession.set(session);
-    }
+  export let data: any;
+  if (data.session) {
+    currentSession.set(data.session);
+  } else {
+    currentSession.set({ name: "", _id: "", token: "" });
   }
 </script>
 
 <div class="container">
-  {#if $currentSession?.token}
+  {#if $currentSession.token}
     <Menu />
     <Heading />
   {/if}
