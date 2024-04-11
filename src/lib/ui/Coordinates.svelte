@@ -10,7 +10,7 @@
   <div class="field-body">
     <div class="field">
       <p class="control is-expanded">
-        <input id="lng" class="input" type="float" bind:value={lat} />
+        <input id="lng" class="input" type="float" name="lat" bind:value={lat} />
       </p>
     </div>
     <div class="field-label is-normal">
@@ -18,7 +18,7 @@
     </div>
     <div class="field">
       <p class="control is-expanded">
-        <input id="lat" class="input" type="float" bind:value={lng} />
+        <input id="lat" class="input" type="float" name="lng" bind:value={lng} />
       </p>
     </div>
   </div>
