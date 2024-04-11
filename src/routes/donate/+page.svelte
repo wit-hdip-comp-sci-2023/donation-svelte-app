@@ -1,40 +1,23 @@
 <script lang="ts">
-  import { currentSession, latestDonation, subTitle } from "$lib/stores";
-  import DonateForm from "./DonateForm.svelte";
+  import { subTitle } from "$lib/stores";
   import Card from "$lib/ui/Card.svelte";
-  import { donationService } from "$lib/services/donation-service";
-  import { onMount } from "svelte";
-  import { get } from "svelte/store";
-  import type { Candidate, Donation } from "$lib/types/donation-types";
   import DonationList from "$lib/ui/DonationList.svelte";
+  import DonateForm from "./DonateForm.svelte";
 
-  let candidateList: Candidate[] = [];
-  let donations: Donation[] = [];
+  export let data: any;
 
-  subTitle.set("Make a Donation");
-
-  onMount(async () => {
-    candidateList = await donationService.getCandidates(get(currentSession));
-    donations = await donationService.getDonations(get(currentSession));
-  });
-
-  latestDonation.subscribe(async (donation) => {
-    if (donation) {
-      donations.push(donation);
-      donations = [...donations];
-    }
-  });
+  subTitle.set("Donations to Date");
 </script>
 
 <div class="columns">
   <div class="column">
-    <Card title="Donatinons to Date">
-      <DonationList {donations} />
+    <Card title="Donations">
+      <DonationList donations={data.donations} />
     </Card>
   </div>
   <div class="column">
-    <Card title="Please Donate">
-      <DonateForm {candidateList} />
+    <Card title="Donations">
+      <DonateForm candidateList={data.candidates} />
     </Card>
   </div>
 </div>
