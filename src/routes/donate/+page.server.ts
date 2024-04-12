@@ -2,14 +2,11 @@ import { donationService } from "$lib/services/donation-service";
 import type { Session } from "$lib/types/donation-types";
 import type { PageServerLoad } from "./$types";
 
-export const load: PageServerLoad = async ({ parent }) => {
-  const { session } = await parent();
-  if (session) {
-    return {
-      donations: await donationService.getDonations(),
-      candidates: await donationService.getCandidates()
-    };
-  }
+export const load: PageServerLoad = async () => {
+  return {
+    donations: await donationService.getDonations(),
+    candidates: await donationService.getCandidates()
+  };
 };
 
 export const actions = {
