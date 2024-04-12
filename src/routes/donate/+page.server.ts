@@ -6,8 +6,8 @@ export const load: PageServerLoad = async ({ parent }) => {
   const { session } = await parent();
   if (session) {
     return {
-      donations: await donationService.getDonations(session),
-      candidates: await donationService.getCandidates(session)
+      donations: await donationService.getDonations(),
+      candidates: await donationService.getCandidates()
     };
   }
 };
@@ -27,7 +27,7 @@ export const actions = {
           lng: form.get("lng") as unknown as number,
           donor: session._id
         };
-        donationService.donate(donation, session);
+        donationService.donate(donation);
       }
     }
   }

@@ -5,7 +5,7 @@ export const load: PageServerLoad = async ({ parent }) => {
   const { session } = await parent();
   if (session) {
     return {
-      donations: await donationService.getDonations(session)
+      donations: await donationService.getDonations()
     };
   }
 };

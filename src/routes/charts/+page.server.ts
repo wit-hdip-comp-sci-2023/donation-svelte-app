@@ -5,8 +5,8 @@ import type { PageServerLoad } from "./$types";
 export const load: PageServerLoad = async ({ parent }) => {
   const { session } = await parent();
   if (session) {
-    const donations = await donationService.getDonations(session);
-    const candidates = await donationService.getCandidates(session);
+    const donations = await donationService.getDonations();
+    const candidates = await donationService.getCandidates();
     return {
       byMethod: generateByMethod(donations),
       byCandidate: generateByCandidate(donations, candidates)
