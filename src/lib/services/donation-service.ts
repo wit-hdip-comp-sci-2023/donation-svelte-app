@@ -1,14 +1,14 @@
-import axios from "axios";
 import type { Session, User } from "$lib/types/donation-types";
 import type { Candidate, Donation } from "$lib/types/donation-types";
+import { userStore } from "$lib/models/mongo/user-store";
+import { donationStore } from "$lib/models/mongo/donation-store";
+import { candidateStore } from "$lib/models/mongo/candidate-store";
 
 export const donationService = {
-  baseUrl: "http://localhost:4000",
-
   async signup(user: User): Promise<boolean> {
     try {
-      const response = await axios.post(`${this.baseUrl}/api/users`, user);
-      return response.data.success === true;
+      const newUser = await userStore.add(user);
+      return !!newUser;
     } catch (error) {
       console.log(error);
       return false;
@@ -17,13 +17,12 @@ export const donationService = {
 
   async login(email: string, password: string): Promise<Session | null> {
     try {
-      const response = await axios.post(`${this.baseUrl}/api/users/authenticate`, { email, password });
-      if (response.data.success) {
-        axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.token;
-        const session: Session = {
-          name: response.data.name,
-          token: response.data.token,
-          _id: response.data.id
+      const user = await userStore.findBy(email);
+      if (user !== null && user.password === password) {
+        const session = {
+          name: `${user.firstName} ${user.lastName}`,
+          token: user._id!.toString(),
+          _id: user._id!.toString()
         };
         return session;
       }
@@ -34,31 +33,27 @@ export const donationService = {
     }
   },
 
-  async donate(donation: Donation, session: Session) {
+  async donate(donation: Donation) {
     try {
-      axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
-      const response = await axios.post(this.baseUrl + "/api/candidates/" + donation.candidate + "/donations", donation);
-      return response.status == 200;
+      donationStore.add(donation);
     } catch (error) {
       return false;
     }
   },
 
-  async getCandidates(session: Session): Promise<Candidate[]> {
+  async getCandidates(): Promise<Candidate[]> {
     try {
-      axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
-      const response = await axios.get(this.baseUrl + "/api/candidates");
-      return response.data;
+      const candidates = await candidateStore.find();
+      return JSON.parse(JSON.stringify(candidates));
     } catch (error) {
       return [];
     }
   },
 
-  async getDonations(session: Session): Promise<Donation[]> {
+  async getDonations(): Promise<Donation[]> {
     try {
-      axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
-      const response = await axios.get(this.baseUrl + "/api/donations");
-      return response.data;
+      const donations = await donationStore.find();
+      return JSON.parse(JSON.stringify(donations));
     } catch (error) {
       return [];
     }
